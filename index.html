@@ -23,6 +23,9 @@
       --gray: #6c757d;
       --gray-light: #f8f9fa;
       --text: #212529;
+      --neutral: #4a6b85;
+      --neutral-bg: #eaf1f6;
+      --neutral-border: #7a99b3;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -116,7 +119,7 @@
     .cyano-banner.safe { background: var(--safe-bg); border-left: 4px solid var(--safe-border); }
     .cyano-banner.advisory { background: var(--advisory-bg); border-left: 4px solid var(--advisory-border); }
     .cyano-banner.caution { background: var(--caution-bg); border-left: 4px solid var(--caution-border); }
-    .cyano-banner.unknown { background: #f0f0f0; border-left: 4px solid #aaa; }
+    .cyano-banner.unknown { background: var(--neutral-bg); border-left: 4px solid var(--neutral-border); }
     .cyano-banner .banner-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
     .cyano-banner .banner-text h3 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.15rem; }
     .cyano-banner .banner-text p { font-size: 0.92rem; line-height: 1.4; }
@@ -155,7 +158,7 @@
     .beach-card.safe { border-left: 5px solid var(--safe-border); }
     .beach-card.caution { border-left: 5px solid var(--caution-border); }
     .beach-card.advisory { border-left: 5px solid var(--advisory-border); }
-    .beach-card.unknown { border-left: 5px solid #ccc; }
+    .beach-card.unknown { border-left: 5px solid var(--neutral-border); }
 
     .status-dot {
       width: 44px;
@@ -170,7 +173,7 @@
     .status-dot.safe { background: var(--safe-bg); }
     .status-dot.caution { background: var(--caution-bg); }
     .status-dot.advisory { background: var(--advisory-bg); }
-    .status-dot.unknown { background: #f0f0f0; }
+    .status-dot.unknown { background: var(--neutral-bg); }
 
     .beach-info { flex: 1; min-width: 0; }
     .beach-name {
@@ -196,7 +199,7 @@
     .beach-badge.safe { background: var(--safe-bg); color: var(--safe); }
     .beach-badge.caution { background: var(--caution-bg); color: var(--caution); }
     .beach-badge.advisory { background: var(--advisory-bg); color: var(--advisory); }
-    .beach-badge.unknown { background: #f0f0f0; color: var(--gray); }
+    .beach-badge.unknown { background: var(--neutral-bg); color: var(--neutral); }
 
     /* DETAIL PANEL */
     .detail-panel {
@@ -256,7 +259,7 @@
     .legend-dot.safe { background: var(--safe-border); }
     .legend-dot.caution { background: var(--caution-border); }
     .legend-dot.advisory { background: var(--advisory-border); }
-    .legend-dot.unknown { background: #aaa; }
+    .legend-dot.unknown { background: var(--neutral-border); }
 
     /* REPORT CTA */
     .report-cta {
@@ -357,10 +360,10 @@
       <div class="legend-item"><div class="legend-dot safe"></div> Safe to swim</div>
       <div class="legend-item"><div class="legend-dot caution"></div> Use caution</div>
       <div class="legend-item"><div class="legend-dot advisory"></div> Advisory in effect</div>
-      <div class="legend-item"><div class="legend-dot unknown"></div> No data yet</div>
+      <div class="legend-item"><div class="legend-dot unknown"></div> Not recently monitored</div>
     </div>
 
-    <div class="section-label">Monitored Beaches</div>
+    <div class="section-label">Popular Beaches &amp; Spots</div>
 
     <!-- Beach list -->
     <div id="beachGrid" class="beach-grid">
@@ -411,21 +414,24 @@
 
   let allBeaches = [];
 
-  function classify(statusStr) {
-    if (!statusStr) return 'unknown';
-    const s = statusStr.toLowerCase();
-    if (s.includes('advisory') || s.includes('warning') || s.includes('watch')) return 'advisory';
-    if (s.includes('caution') || s.includes('alert')) return 'caution';
-    if (s.includes('no advisory') || s.includes('no bloom') || s.includes('safe')) return 'safe';
+  function classify(statusStr, hasSample) {
+    const s = (statusStr || '').toLowerCase();
+    // Check the "clear" phrases FIRST so "No advisory" isn't read as an advisory
+    const isClear = s.includes('no advisory') || s.includes('no bloom') || s.includes('no report') || s.includes('safe') || s.includes('open');
+    if (!isClear) {
+      if (s.includes('advisory') || s.includes('warning') || s.includes('watch')) return 'advisory';
+      if (s.includes('caution') || s.includes('alert')) return 'caution';
+    }
+    if (isClear) return hasSample ? 'safe' : 'unknown';
     return 'unknown';
   }
 
   function statusLabel(cls) {
-    return { safe: 'Safe to Swim', caution: 'Use Caution', advisory: 'Advisory', unknown: 'No Data' }[cls];
+    return { safe: 'Safe to Swim', caution: 'Use Caution', advisory: 'Advisory', unknown: 'No Recent Data' }[cls];
   }
 
   function statusIcon(cls) {
-    return { safe: '✅', caution: '⚠️', advisory: '🚫', unknown: '❓' }[cls];
+    return { safe: '✅', caution: '⚠️', advisory: '🚫', unknown: 'ℹ️' }[cls];
   }
 
   function formatDate(ms) {
@@ -440,7 +446,7 @@
       return;
     }
     grid.innerHTML = beaches.map((b, i) => {
-      const cls = classify(b.Status);
+      const cls = classify(b.Status, !!b.SampleDate);
       const icon = statusIcon(cls);
       const label = statusLabel(cls);
       const date = formatDate(b.SampleDate);
@@ -540,7 +546,9 @@
       allBeaches = (data.features || []).map(f => f.attributes).sort((a, b) => {
         // Sort advisory first, then caution, then safe, then unknown
         const order = { advisory: 0, caution: 1, safe: 2, unknown: 3 };
-        return (order[classify(a.Status)] ?? 3) - (order[classify(b.Status)] ?? 3);
+        const ca = classify(a.Status, !!a.SampleDate);
+        const cb = classify(b.Status, !!b.SampleDate);
+        return (order[ca] ?? 3) - (order[cb] ?? 3);
       });
 
       const now = new Date();
