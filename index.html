@@ -659,7 +659,6 @@
             ${date ? `<div class="detail-row"><strong>Image date:</strong> ${date}</div>` : ''}
             <div class="detail-row"><strong>Guidance:</strong> NH issues a cyanobacteria advisory at 70,000 cells/mL. Elevated = 20,000&ndash;70,000.</div>
             ${p.cellConcentration == null ? '<div class="detail-row">This spot sits in a narrow inlet the 300m satellite can\u2019t resolve. Rely on posted beach advisories nearby.</div>' : ''}
-            ${p.mapsUrl ? `<div class="detail-row"><a href="${p.mapsUrl}" target="_blank" rel="noopener">\uD83D\uDCCD Open in Google Maps</a></div>` : ''}
             <div class="detail-row" style="margin-top:0.6rem;font-size:0.8rem;color:#888;">
               Source: EPA CyAN satellite (Sentinel-3). Screening estimate, not a water sample.
             </div>
