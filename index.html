@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Safe to Swim? — Lake Winnipesaukee</title>
+  <meta name="description" content="Check real-time swim safety for beaches on Lake Winnipesaukee based on cyanobacteria and bacteria monitoring data." />
+  <style>
+    :root {
+      --blue-dark: #0a3d62;
+      --blue-mid: #1a6b9a;
+      --blue-light: #e8f4fd;
+      --teal: #17a2b8;
+      --safe: #1e8449;
+      --safe-bg: #d5f5e3;
+      --safe-border: #27ae60;
+      --caution: #b7770d;
+      --caution-bg: #fef9e7;
+      --caution-border: #f39c12;
+      --advisory: #922b21;
+      --advisory-bg: #fdedec;
+      --advisory-border: #e74c3c;
+      --gray: #6c757d;
+      --gray-light: #f8f9fa;
+      --text: #212529;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--blue-dark);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(160deg, #0a3d62 0%, #1a6b9a 60%, #2196a8 100%);
+      color: white;
+      padding: 2.5rem 1.5rem 3.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0; right: 0;
+      height: 60px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 60'%3E%3Cpath fill='%23f8f9fa' fill-opacity='1' d='M0,30 C240,60 480,0 720,30 C960,60 1200,0 1440,30 L1440,60 L0,60 Z'/%3E%3C/svg%3E") no-repeat bottom;
+      background-size: cover;
+    }
+    .hero-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.5rem;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      opacity: 0.88;
+      max-width: 520px;
+      margin: 0 auto 1.5rem;
+    }
+    .last-updated {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: 0.5rem;
+    }
+
+    /* MAIN CARD WRAPPER */
+    .main {
+      background: var(--gray-light);
+      padding: 2rem 1rem 3rem;
+      min-height: 400px;
+    }
+    .container { max-width: 780px; margin: 0 auto; }
+
+    /* SEARCH */
+    .search-wrap {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    .search-wrap input {
+      width: 100%;
+      padding: 0.85rem 1rem 0.85rem 2.8rem;
+      font-size: 1.05rem;
+      border: 2px solid #dee2e6;
+      border-radius: 12px;
+      outline: none;
+      background: white;
+      transition: border-color 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .search-wrap input:focus { border-color: var(--blue-mid); }
+    .search-wrap .icon {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+
+    /* CYANO STATUS BANNER */
+    .cyano-banner {
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .cyano-banner.safe { background: var(--safe-bg); border-left: 4px solid var(--safe-border); }
+    .cyano-banner.advisory { background: var(--advisory-bg); border-left: 4px solid var(--advisory-border); }
+    .cyano-banner.caution { background: var(--caution-bg); border-left: 4px solid var(--caution-border); }
+    .cyano-banner.unknown { background: #f0f0f0; border-left: 4px solid #aaa; }
+    .cyano-banner .banner-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .cyano-banner .banner-text h3 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.15rem; }
+    .cyano-banner .banner-text p { font-size: 0.92rem; line-height: 1.4; }
+
+    /* SECTION LABEL */
+    .section-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--gray);
+      margin-bottom: 0.75rem;
+    }
+
+    /* BEACH CARDS */
+    .beach-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .beach-card {
+      background: white;
+      border-radius: 14px;
+      padding: 1.1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      border: 1px solid transparent;
+      text-decoration: none;
+      color: inherit;
+    }
+    .beach-card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.11); }
+    .beach-card.safe { border-left: 5px solid var(--safe-border); }
+    .beach-card.caution { border-left: 5px solid var(--caution-border); }
+    .beach-card.advisory { border-left: 5px solid var(--advisory-border); }
+    .beach-card.unknown { border-left: 5px solid #ccc; }
+
+    .status-dot {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+    .status-dot.safe { background: var(--safe-bg); }
+    .status-dot.caution { background: var(--caution-bg); }
+    .status-dot.advisory { background: var(--advisory-bg); }
+    .status-dot.unknown { background: #f0f0f0; }
+
+    .beach-info { flex: 1; min-width: 0; }
+    .beach-name {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .beach-meta { font-size: 0.82rem; color: var(--gray); }
+    .beach-meta span + span::before { content: ' · '; }
+
+    .beach-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.3rem 0.7rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      flex-shrink: 0;
+    }
+    .beach-badge.safe { background: var(--safe-bg); color: var(--safe); }
+    .beach-badge.caution { background: var(--caution-bg); color: var(--caution); }
+    .beach-badge.advisory { background: var(--advisory-bg); color: var(--advisory); }
+    .beach-badge.unknown { background: #f0f0f0; color: var(--gray); }
+
+    /* DETAIL PANEL */
+    .detail-panel {
+      display: none;
+      background: var(--gray-light);
+      border-radius: 0 0 12px 12px;
+      margin-top: -10px;
+      padding: 1rem 1.25rem 1.25rem;
+      border: 1px solid #e0e0e0;
+      border-top: none;
+    }
+    .detail-panel.open { display: block; }
+    .detail-row { font-size: 0.88rem; margin-bottom: 0.4rem; color: #444; }
+    .detail-row strong { color: var(--text); }
+
+    /* LOADING / ERROR */
+    .loading {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--gray);
+    }
+    .loading .spinner {
+      width: 36px; height: 36px;
+      border: 4px solid #dee2e6;
+      border-top-color: var(--blue-mid);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .no-results {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    /* LEGEND */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.82rem;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .legend-dot.safe { background: var(--safe-border); }
+    .legend-dot.caution { background: var(--caution-border); }
+    .legend-dot.advisory { background: var(--advisory-border); }
+    .legend-dot.unknown { background: #aaa; }
+
+    /* REPORT CTA */
+    .report-cta {
+      background: linear-gradient(135deg, #1a6b9a, #0a3d62);
+      color: white;
+      border-radius: 16px;
+      padding: 1.75rem 1.5rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .report-cta h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+    .report-cta p { font-size: 0.92rem; opacity: 0.88; margin-bottom: 1.25rem; line-height: 1.5; }
+    .btn-report {
+      display: inline-block;
+      background: white;
+      color: var(--blue-dark);
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.75rem 1.75rem;
+      border-radius: 30px;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .btn-report:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.2); }
+
+    /* FOOTER */
+    footer {
+      background: var(--blue-dark);
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+      padding: 1.5rem 1rem;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+    footer a { color: rgba(255,255,255,0.8); }
+
+    /* EMBED TOGGLE */
+    .embed-section { margin-top: 2rem; }
+    .embed-toggle {
+      background: none;
+      border: 2px solid var(--blue-mid);
+      color: var(--blue-mid);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.6rem 1.25rem;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+    .embed-toggle:hover { background: var(--blue-mid); color: white; }
+    .embed-frame { display: none; border-radius: 12px; overflow: hidden; }
+    .embed-frame.open { display: block; }
+    .embed-frame iframe {
+      width: 100%;
+      height: 580px;
+      border: none;
+      border-radius: 12px;
+    }
+
+    @media (max-width: 480px) {
+      .beach-card { padding: 0.9rem 1rem; }
+      .beach-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-icon">🏊</div>
+  <h1>Safe to Swim?</h1>
+  <p>Real-time water safety for Lake Winnipesaukee beaches</p>
+  <p class="last-updated" id="lastUpdated">Loading data…</p>
+</div>
+
+<div class="main">
+  <div class="container">
+
+    <!-- Cyano Lake-Wide Banner -->
+    <div id="cyanoBanner" class="cyano-banner unknown">
+      <div class="banner-icon" id="bannerIcon">🔄</div>
+      <div class="banner-text">
+        <h3 id="bannerTitle">Checking cyanobacteria status…</h3>
+        <p id="bannerDesc">Loading the latest bloom report for Lake Winnipesaukee.</p>
+      </div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <span class="icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search for a beach or town…" autocomplete="off" />
+    </div>
+
+    <!-- Legend -->
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot safe"></div> Safe to swim</div>
+      <div class="legend-item"><div class="legend-dot caution"></div> Use caution</div>
+      <div class="legend-item"><div class="legend-dot advisory"></div> Advisory in effect</div>
+      <div class="legend-item"><div class="legend-dot unknown"></div> No data yet</div>
+    </div>
+
+    <div class="section-label">Monitored Beaches</div>
+
+    <!-- Beach list -->
+    <div id="beachGrid" class="beach-grid">
+      <div class="loading">
+        <div class="spinner"></div>
+        Fetching the latest water quality data…
+      </div>
+    </div>
+
+    <!-- Report bloom CTA -->
+    <div class="report-cta">
+      <h2>🌊 See something suspicious?</h2>
+      <p>Cyanobacteria blooms can appear quickly. If you spot green scum, paint-like streaks, or an earthy/grassy smell at the water's edge, please report it to NHDES.</p>
+      <a href="https://survey123.arcgis.com/share/151c9fc3c8214c2e93325f77e0f1d578" target="_blank" rel="noopener" class="btn-report">📝 Report a Bloom</a>
+    </div>
+
+    <!-- Optional embedded form -->
+    <div class="embed-section">
+      <button class="embed-toggle" onclick="toggleEmbed()">Show Bloom Report Form on this Page</button>
+      <div class="embed-frame" id="embedFrame">
+        <iframe
+          src="https://survey123.arcgis.com/share/151c9fc3c8214c2e93325f77e0f1d578"
+          title="NHDES Cyanobacteria Bloom Report Form"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  Data from <a href="https://www.des.nh.gov/" target="_blank">NH Dept. of Environmental Services</a> &
+  <a href="https://www.winnipesaukee.org/cyanobacteria/" target="_blank">Lake Winnipesaukee Alliance</a>.
+  Updated weekly June–September. Not affiliated with NHDES.
+</footer>
+
+<script>
+  const BEACH_API = 'https://services1.arcgis.com/MAcUimSes4gPY4sM/arcgis/rest/services/2024_Healthy_Swimming_Mapper_V2_WFL1/FeatureServer/0/query'
+    + '?where=Waterbody_Name+LIKE+\'%25Winnipesaukee%25\''
+    + '&outFields=Beach_Name,Waterbody_Name,Status,SampleDate,Sample_Results,Advisory_history,Lat,Long'
+    + '&f=json&resultRecordCount=50';
+
+  const CYANO_API = 'https://services1.arcgis.com/MAcUimSes4gPY4sM/arcgis/rest/services/2024_Healthy_Swimming_Mapper_V2_WFL1/FeatureServer/9/query'
+    + '?where=WB_NAME+LIKE+\'%25Lake+Winnipesaukee%25\''
+    + '&outFields=WB_NAME,Town,Status,SamplingDate,TotalCyanoDensity,Bloom_status,LatestAdvisory'
+    + '&f=json&resultRecordCount=5';
+
+  let allBeaches = [];
+
+  function classify(statusStr) {
+    if (!statusStr) return 'unknown';
+    const s = statusStr.toLowerCase();
+    if (s.includes('advisory') || s.includes('warning') || s.includes('watch')) return 'advisory';
+    if (s.includes('caution') || s.includes('alert')) return 'caution';
+    if (s.includes('no advisory') || s.includes('no bloom') || s.includes('safe')) return 'safe';
+    return 'unknown';
+  }
+
+  function statusLabel(cls) {
+    return { safe: 'Safe to Swim', caution: 'Use Caution', advisory: 'Advisory', unknown: 'No Data' }[cls];
+  }
+
+  function statusIcon(cls) {
+    return { safe: '✅', caution: '⚠️', advisory: '🚫', unknown: '❓' }[cls];
+  }
+
+  function formatDate(ms) {
+    if (!ms) return null;
+    return new Date(ms).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function renderBeaches(beaches) {
+    const grid = document.getElementById('beachGrid');
+    if (!beaches.length) {
+      grid.innerHTML = '<div class="no-results">No beaches found matching your search.</div>';
+      return;
+    }
+    grid.innerHTML = beaches.map((b, i) => {
+      const cls = classify(b.Status);
+      const icon = statusIcon(cls);
+      const label = statusLabel(cls);
+      const date = formatDate(b.SampleDate);
+      const results = b.Sample_Results ? `Bacteria: ${b.Sample_Results} MPN/100mL` : '';
+      const history = b.Advisory_history && b.Advisory_history !== 'None' ? b.Advisory_history : '';
+      return `
+        <div class="beach-card ${cls}" onclick="toggleDetail(${i})">
+          <div class="status-dot ${cls}">${icon}</div>
+          <div class="beach-info">
+            <div class="beach-name">${b.Beach_Name}</div>
+            <div class="beach-meta">
+              ${date ? `<span>Sampled ${date}</span>` : '<span>No recent sample</span>'}
+              ${results ? `<span>${results}</span>` : ''}
+            </div>
+          </div>
+          <div class="beach-badge ${cls}">${label}</div>
+        </div>
+        <div class="detail-panel" id="detail-${i}">
+          ${results ? `<div class="detail-row"><strong>Bacteria level:</strong> ${results}</div>` : ''}
+          ${date ? `<div class="detail-row"><strong>Last sampled:</strong> ${date}</div>` : ''}
+          ${history ? `<div class="detail-row"><strong>Recent advisory dates:</strong> ${history}</div>` : ''}
+          ${b.Advisory_history === 'None' || !b.Advisory_history ? '<div class="detail-row">No advisories issued this season.</div>' : ''}
+          <div class="detail-row" style="margin-top:0.6rem;font-size:0.8rem;color:#888;">
+            Source: NH Dept. of Environmental Services Beach Program
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function toggleDetail(i) {
+    const panel = document.getElementById(`detail-${i}`);
+    panel.classList.toggle('open');
+  }
+
+  function toggleEmbed() {
+    const frame = document.getElementById('embedFrame');
+    const btn = document.querySelector('.embed-toggle');
+    frame.classList.toggle('open');
+    btn.textContent = frame.classList.contains('open')
+      ? 'Hide Bloom Report Form'
+      : 'Show Bloom Report Form on this Page';
+  }
+
+  async function loadCyano() {
+    try {
+      const res = await fetch(CYANO_API);
+      const data = await res.json();
+      const features = data.features || [];
+      const lake = features.find(f => f.attributes.WB_NAME && f.attributes.WB_NAME.toLowerCase().includes('lake winnipesaukee'));
+      const attrs = lake ? lake.attributes : null;
+
+      const banner = document.getElementById('cyanoBanner');
+      const bannerIcon = document.getElementById('bannerIcon');
+      const bannerTitle = document.getElementById('bannerTitle');
+      const bannerDesc = document.getElementById('bannerDesc');
+
+      if (!attrs) {
+        banner.className = 'cyano-banner unknown';
+        bannerIcon.textContent = '❓';
+        bannerTitle.textContent = 'Cyanobacteria status unavailable';
+        bannerDesc.textContent = 'Could not retrieve lake-wide bloom data. Check back later or visit winnipesaukee.org.';
+        return;
+      }
+
+      const bloomStatus = (attrs.Bloom_status || attrs.Status || '').toLowerCase();
+      let cls = 'safe';
+      if (bloomStatus.includes('advisory') || bloomStatus.includes('warning')) cls = 'advisory';
+      else if (bloomStatus.includes('caution') || bloomStatus.includes('alert')) cls = 'caution';
+      else if (bloomStatus.includes('no bloom') || bloomStatus.includes('no report')) cls = 'safe';
+
+      const messages = {
+        safe: ['No cyanobacteria bloom reported', 'No active blooms detected on Lake Winnipesaukee. Conditions look good — enjoy your swim!'],
+        caution: ['Cyanobacteria bloom possible', 'A bloom may be present. Avoid areas with green scum or unusual color near shore.'],
+        advisory: ['Cyanobacteria advisory in effect', 'A bloom is confirmed. Avoid contact with water near affected areas. Keep pets and children away from the shoreline.'],
+        unknown: ['Lake-wide status unknown', attrs.LatestAdvisory || 'No current data available.'],
+      };
+
+      banner.className = `cyano-banner ${cls}`;
+      bannerIcon.textContent = statusIcon(cls);
+      bannerTitle.textContent = messages[cls][0];
+      bannerDesc.textContent = messages[cls][1];
+
+      const date = formatDate(attrs.SamplingDate || attrs.StatusDate);
+      const lastUpdated = document.getElementById('lastUpdated');
+      if (date) lastUpdated.textContent = `Cyanobacteria data as of ${date}`;
+
+    } catch (e) {
+      console.error('Cyano load error:', e);
+    }
+  }
+
+  async function loadBeaches() {
+    try {
+      const res = await fetch(BEACH_API);
+      const data = await res.json();
+      allBeaches = (data.features || []).map(f => f.attributes).sort((a, b) => {
+        // Sort advisory first, then caution, then safe, then unknown
+        const order = { advisory: 0, caution: 1, safe: 2, unknown: 3 };
+        return (order[classify(a.Status)] ?? 3) - (order[classify(b.Status)] ?? 3);
+      });
+
+      const now = new Date();
+      document.getElementById('lastUpdated').textContent =
+        `Data refreshed ${now.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+
+      renderBeaches(allBeaches);
+
+      // Search filter
+      document.getElementById('searchInput').addEventListener('input', function () {
+        const q = this.value.toLowerCase().trim();
+        const filtered = allBeaches.filter(b =>
+          (b.Beach_Name || '').toLowerCase().includes(q) ||
+          (b.Waterbody_Name || '').toLowerCase().includes(q)
+        );
+        renderBeaches(filtered);
+      });
+
+    } catch (e) {
+      document.getElementById('beachGrid').innerHTML =
+        '<div class="no-results">⚠️ Could not load beach data. Please try again or visit <a href="https://www.arcgis.com/apps/dashboards/8d84a6b03acb4efaab571b222c78447b" target="_blank">the NHDES mapper</a>.</div>';
+    }
+  }
+
+  loadCyano();
+  loadBeaches();
+</script>
+</body>
+</html>
