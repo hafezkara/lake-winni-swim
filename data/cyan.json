@@ -2,12 +2,13 @@
   "source": "EPA CyAN (Sentinel-3 OLCI satellite, weekly max)",
   "sourceUrl": "https://www.epa.gov/water-research/cyanobacteria-assessment-network-cyan",
   "note": "Cell concentrations are satellite estimates of cyanobacteria, not direct water samples. Use as a lake-wide screening signal, not a substitute for posted advisories.",
-  "fetchedAt": "2026-06-30T14:19:07.977Z",
+  "fetchedAt": "2026-06-30T16:02:24.340Z",
   "points": [
     {
       "area": "The Broads (Center)",
       "lat": 43.65,
       "lng": -71.3,
+      "mapsUrl": null,
       "locationName": "Melvin Island",
       "cellConcentration": 84722.74,
       "maxCellConcentration": 178648.75,
@@ -19,6 +20,7 @@
       "area": "Alton Bay",
       "lat": 43.515,
       "lng": -71.225,
+      "mapsUrl": null,
       "status": "no_data",
       "cellConcentration": null,
       "imageDate": null
@@ -27,6 +29,7 @@
       "area": "Wolfeboro Bay",
       "lat": 43.61,
       "lng": -71.215,
+      "mapsUrl": null,
       "status": "no_data",
       "cellConcentration": null,
       "imageDate": null
@@ -35,6 +38,7 @@
       "area": "Meredith Bay",
       "lat": 43.625,
       "lng": -71.5,
+      "mapsUrl": null,
       "status": "no_data",
       "cellConcentration": null,
       "imageDate": null
@@ -43,6 +47,7 @@
       "area": "Center Harbor",
       "lat": 43.705,
       "lng": -71.455,
+      "mapsUrl": null,
       "locationName": "Halfmile Island",
       "cellConcentration": 376703.8,
       "maxCellConcentration": 420726.66,
@@ -54,6 +59,7 @@
       "area": "Moultonborough Bay / Braun’s Bay",
       "lat": 43.722,
       "lng": -71.378,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Braun%27s+Bay+Sandbar+Lake+Winnipesaukee",
       "locationName": "Town of Moultonborough",
       "cellConcentration": 23768.402,
       "maxCellConcentration": 376703.8,
@@ -62,9 +68,22 @@
       "validCellsCount": 3
     },
     {
+      "area": "Harilla Landing (Long Island)",
+      "lat": 43.685,
+      "lng": -71.31,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=Harilla+Landing+Yacht+Club+Moultonborough+NH",
+      "locationName": "Haley Point",
+      "cellConcentration": 80167.805,
+      "maxCellConcentration": 80167.805,
+      "imageDate": "04-27-2026 04:00:00:0 UTC",
+      "imageDateLong": 1777262400000,
+      "validCellsCount": 3
+    },
+    {
       "area": "Paugus & Weirs Bay",
       "lat": 43.62,
       "lng": -71.455,
+      "mapsUrl": null,
       "locationName": "Spindle Point",
       "cellConcentration": 178648.75,
       "maxCellConcentration": 178648.75,
@@ -76,6 +95,7 @@
       "area": "19 Mile Bay / Tuftonboro",
       "lat": 43.678,
       "lng": -71.3,
+      "mapsUrl": null,
       "locationName": "Store Island",
       "cellConcentration": 62517.27,
       "maxCellConcentration": 62517.27,
