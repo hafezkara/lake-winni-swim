@@ -1,0 +1,87 @@
+{
+  "source": "EPA CyAN (Sentinel-3 OLCI satellite, weekly max)",
+  "sourceUrl": "https://www.epa.gov/water-research/cyanobacteria-assessment-network-cyan",
+  "note": "Cell concentrations are satellite estimates of cyanobacteria, not direct water samples. Use as a lake-wide screening signal, not a substitute for posted advisories.",
+  "fetchedAt": "2026-06-30T14:19:07.977Z",
+  "points": [
+    {
+      "area": "The Broads (Center)",
+      "lat": 43.65,
+      "lng": -71.3,
+      "locationName": "Melvin Island",
+      "cellConcentration": 84722.74,
+      "maxCellConcentration": 178648.75,
+      "imageDate": "05-16-2026 04:00:00:0 UTC",
+      "imageDateLong": 1778904000000,
+      "validCellsCount": 5
+    },
+    {
+      "area": "Alton Bay",
+      "lat": 43.515,
+      "lng": -71.225,
+      "status": "no_data",
+      "cellConcentration": null,
+      "imageDate": null
+    },
+    {
+      "area": "Wolfeboro Bay",
+      "lat": 43.61,
+      "lng": -71.215,
+      "status": "no_data",
+      "cellConcentration": null,
+      "imageDate": null
+    },
+    {
+      "area": "Meredith Bay",
+      "lat": 43.625,
+      "lng": -71.5,
+      "status": "no_data",
+      "cellConcentration": null,
+      "imageDate": null
+    },
+    {
+      "area": "Center Harbor",
+      "lat": 43.705,
+      "lng": -71.455,
+      "locationName": "Halfmile Island",
+      "cellConcentration": 376703.8,
+      "maxCellConcentration": 420726.66,
+      "imageDate": "04-25-2026 04:00:00:0 UTC",
+      "imageDateLong": 1777089600000,
+      "validCellsCount": 4
+    },
+    {
+      "area": "Moultonborough Bay / Braun’s Bay",
+      "lat": 43.722,
+      "lng": -71.378,
+      "locationName": "Town of Moultonborough",
+      "cellConcentration": 23768.402,
+      "maxCellConcentration": 376703.8,
+      "imageDate": "04-25-2026 04:00:00:0 UTC",
+      "imageDateLong": 1777089600000,
+      "validCellsCount": 3
+    },
+    {
+      "area": "Paugus & Weirs Bay",
+      "lat": 43.62,
+      "lng": -71.455,
+      "locationName": "Spindle Point",
+      "cellConcentration": 178648.75,
+      "maxCellConcentration": 178648.75,
+      "imageDate": "03-28-2026 04:00:00:0 UTC",
+      "imageDateLong": 1774670400000,
+      "validCellsCount": 4
+    },
+    {
+      "area": "19 Mile Bay / Tuftonboro",
+      "lat": 43.678,
+      "lng": -71.3,
+      "locationName": "Store Island",
+      "cellConcentration": 62517.27,
+      "maxCellConcentration": 62517.27,
+      "imageDate": "06-06-2026 04:00:00:0 UTC",
+      "imageDateLong": 1780718400000,
+      "validCellsCount": 2
+    }
+  ]
+}

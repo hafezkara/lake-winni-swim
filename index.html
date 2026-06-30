@@ -261,6 +261,19 @@
     .legend-dot.advisory { background: var(--advisory-border); }
     .legend-dot.unknown { background: var(--neutral-border); }
 
+    /* SATELLITE */
+    .sat-intro {
+      font-size: 0.88rem;
+      color: var(--gray);
+      line-height: 1.5;
+      margin-bottom: 1rem;
+    }
+    .sat-value {
+      font-size: 0.82rem;
+      color: var(--gray);
+      font-variant-numeric: tabular-nums;
+    }
+
     /* REPORT CTA */
     .report-cta {
       background: linear-gradient(135deg, #1a6b9a, #0a3d62);
@@ -371,6 +384,17 @@
         <div class="spinner"></div>
         Fetching the latest water quality data…
       </div>
+    </div>
+
+    <!-- Satellite lake-wide scan -->
+    <div class="section-label" style="margin-top:2rem;">Lake-Wide Satellite Scan</div>
+    <p class="sat-intro">
+      Many popular open-water spots &mdash; like the Braun&rsquo;s Bay sandbar &mdash; have no shoreline testing.
+      These readings come from EPA&rsquo;s CyAN satellite, which estimates cyanobacteria across the lake surface.
+      Use them as an early screening signal, not a substitute for posted advisories.
+    </p>
+    <div id="satGrid" class="beach-grid">
+      <div class="loading"><div class="spinner"></div>Loading satellite readings…</div>
     </div>
 
     <!-- Report bloom CTA -->
@@ -573,8 +597,93 @@
     }
   }
 
+  // ---- Satellite (CyAN) layer ----
+  // Thresholds follow NH's cyanobacteria advisory guidance: NHDES issues an
+  // advisory at >= 70,000 cells/mL. We flag a caution band below that.
+  const CYANO_ADVISORY = 70000;
+  const CYANO_CAUTION = 20000;
+
+  function classifyCyano(cells) {
+    if (cells == null) return 'unknown';
+    if (cells >= CYANO_ADVISORY) return 'advisory';
+    if (cells >= CYANO_CAUTION) return 'caution';
+    return 'safe';
+  }
+
+  function cyanoLabel(cls) {
+    return { safe: 'Low', caution: 'Elevated', advisory: 'Bloom Likely', unknown: 'Not Covered' }[cls];
+  }
+
+  function satImageDate(str) {
+    // "05-16-2026 04:00:00:0 UTC" -> "May 16, 2026"
+    if (!str) return null;
+    const m = str.match(/^(\d{2})-(\d{2})-(\d{4})/);
+    if (!m) return str;
+    return new Date(`${m[3]}-${m[1]}-${m[2]}T00:00:00Z`)
+      .toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+  }
+
+  async function loadSatellite() {
+    const grid = document.getElementById('satGrid');
+    try {
+      const res = await fetch('data/cyan.json', { cache: 'no-cache' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const points = (data.points || []).slice().sort((a, b) => {
+        const order = { advisory: 0, caution: 1, safe: 2, unknown: 3 };
+        return order[classifyCyano(a.cellConcentration)] - order[classifyCyano(b.cellConcentration)];
+      });
+
+      grid.innerHTML = points.map((p, i) => {
+        const cls = classifyCyano(p.cellConcentration);
+        const icon = statusIcon(cls);
+        const label = cyanoLabel(cls);
+        const date = satImageDate(p.imageDate);
+        const val = p.cellConcentration != null
+          ? `${Math.round(p.cellConcentration).toLocaleString()} cells/mL`
+          : 'No satellite reading (bay too narrow for 300m sensor)';
+        return `
+          <div class="beach-card ${cls}" onclick="toggleSatDetail(${i})">
+            <div class="status-dot ${cls}">${icon}</div>
+            <div class="beach-info">
+              <div class="beach-name">${p.area}</div>
+              <div class="beach-meta">
+                <span class="sat-value">${val}</span>
+                ${date ? `<span>${date}</span>` : ''}
+              </div>
+            </div>
+            <div class="beach-badge ${cls}">${label}</div>
+          </div>
+          <div class="detail-panel" id="satdetail-${i}">
+            ${p.cellConcentration != null ? `<div class="detail-row"><strong>Satellite estimate:</strong> ${Math.round(p.cellConcentration).toLocaleString()} cells/mL</div>` : ''}
+            ${date ? `<div class="detail-row"><strong>Image date:</strong> ${date}</div>` : ''}
+            <div class="detail-row"><strong>Guidance:</strong> NH issues a cyanobacteria advisory at 70,000 cells/mL. Elevated = 20,000&ndash;70,000.</div>
+            ${p.cellConcentration == null ? '<div class="detail-row">This spot sits in a narrow inlet the 300m satellite can\u2019t resolve. Rely on posted beach advisories nearby.</div>' : ''}
+            <div class="detail-row" style="margin-top:0.6rem;font-size:0.8rem;color:#888;">
+              Source: EPA CyAN satellite (Sentinel-3). Screening estimate, not a water sample.
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const fetched = data.fetchedAt ? new Date(data.fetchedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : null;
+      if (fetched) {
+        grid.insertAdjacentHTML('beforeend',
+          `<div style="font-size:0.75rem;color:#999;text-align:center;margin-top:0.5rem;">Satellite data retrieved ${fetched}. Updated weekly by EPA.</div>`);
+      }
+    } catch (e) {
+      console.error('Satellite load error:', e);
+      grid.innerHTML = '<div class="no-results">Satellite readings are temporarily unavailable.</div>';
+    }
+  }
+
+  function toggleSatDetail(i) {
+    document.getElementById(`satdetail-${i}`).classList.toggle('open');
+  }
+
   loadCyano();
   loadBeaches();
+  loadSatellite();
 </script>
 </body>
 </html>
