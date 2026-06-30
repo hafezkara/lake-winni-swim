@@ -22,7 +22,7 @@ const POINTS = [
   { area: 'Wolfeboro Bay', candidates: [[43.610, -71.215], [43.615, -71.225], [43.605, -71.235], [43.600, -71.220]] },
   { area: 'Meredith Bay', candidates: [[43.625, -71.500], [43.620, -71.490], [43.630, -71.485], [43.635, -71.505]] },
   { area: 'Center Harbor', candidates: [[43.705, -71.455], [43.700, -71.445], [43.695, -71.450]] },
-  { area: 'Moultonborough Bay / Braun\u2019s Bay', candidates: [[43.722, -71.378]] },
+  { area: 'Braun\u2019s Bay Sandbar (Moultonborough)', candidates: [[43.722, -71.378]] },
   { area: 'Harilla Landing (Long Island)', candidates: [[43.690, -71.315], [43.685, -71.310], [43.695, -71.305], [43.700, -71.318], [43.680, -71.320]] },
   { area: 'Paugus & Weirs Bay', candidates: [[43.590, -71.455], [43.600, -71.450], [43.620, -71.455]] },
   { area: '19 Mile Bay / Tuftonboro', candidates: [[43.678, -71.300]] },
