@@ -600,12 +600,26 @@
   // advisory at >= 70,000 cells/mL. We flag a caution band below that.
   const CYANO_ADVISORY = 70000;
   const CYANO_CAUTION = 20000;
+  // A satellite reading older than this is too stale to present as current
+  // conditions; we show "No Recent Data" instead of a bloom classification.
+  const CYANO_STALE_DAYS = 21;
 
   function classifyCyano(cells) {
     if (cells == null) return 'unknown';
     if (cells >= CYANO_ADVISORY) return 'advisory';
     if (cells >= CYANO_CAUTION) return 'caution';
     return 'safe';
+  }
+
+  function satIsStale(p) {
+    if (!p.imageDateLong) return false;
+    return (Date.now() - p.imageDateLong) > CYANO_STALE_DAYS * 24 * 60 * 60 * 1000;
+  }
+
+  // Effective status for a satellite point: stale or unreadable -> unknown.
+  function satClass(p) {
+    if (p.cellConcentration == null || satIsStale(p)) return 'unknown';
+    return classifyCyano(p.cellConcentration);
   }
 
   function cyanoLabel(cls) {
@@ -629,13 +643,16 @@
       const data = await res.json();
       const points = (data.points || []).slice().sort((a, b) => {
         const order = { advisory: 0, caution: 1, safe: 2, unknown: 3 };
-        return order[classifyCyano(a.cellConcentration)] - order[classifyCyano(b.cellConcentration)];
+        return order[satClass(a)] - order[satClass(b)];
       });
 
       grid.innerHTML = points.map((p, i) => {
-        const cls = classifyCyano(p.cellConcentration);
+        const cls = satClass(p);
+        const stale = p.cellConcentration != null && satIsStale(p);
         const icon = statusIcon(cls);
-        const label = cyanoLabel(cls);
+        const label = p.cellConcentration == null
+          ? 'Not Covered'
+          : (stale ? 'No Recent Data' : cyanoLabel(cls));
         const date = satImageDate(p.imageDate);
         const val = p.cellConcentration != null
           ? `${Math.round(p.cellConcentration).toLocaleString()} cells/mL`
@@ -656,6 +673,7 @@
             ${p.cellConcentration != null ? `<div class="detail-row"><strong>Satellite estimate:</strong> ${Math.round(p.cellConcentration).toLocaleString()} cells/mL</div>` : ''}
             ${date ? `<div class="detail-row"><strong>Image date:</strong> ${date}</div>` : ''}
             <div class="detail-row"><strong>Guidance:</strong> NH issues a cyanobacteria advisory at 70,000 cells/mL. Elevated = 20,000&ndash;70,000.</div>
+            ${stale ? `<div class="detail-row">The most recent clear satellite pass here is more than ${CYANO_STALE_DAYS} days old, so this isn\u2019t a current reading. Rely on posted beach advisories nearby.</div>` : ''}
             ${p.cellConcentration == null ? '<div class="detail-row">This spot sits in a narrow inlet the 300m satellite can\u2019t resolve. Rely on posted beach advisories nearby.</div>' : ''}
             <div class="detail-row" style="margin-top:0.6rem;font-size:0.8rem;color:#888;">
               Source: EPA CyAN satellite (Sentinel-3). Screening estimate, not a water sample.
