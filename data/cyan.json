@@ -2,7 +2,7 @@
   "source": "EPA CyAN (Sentinel-3 OLCI satellite, weekly max)",
   "sourceUrl": "https://www.epa.gov/water-research/cyanobacteria-assessment-network-cyan",
   "note": "Cell concentrations are satellite estimates of cyanobacteria, not direct water samples. Use as a lake-wide screening signal, not a substitute for posted advisories.",
-  "fetchedAt": "2026-09-01T15:25:16.613Z",
+  "fetchedAt": "2026-09-08T15:00:13.735Z",
   "points": [
     {
       "area": "The Broads (Center)",
