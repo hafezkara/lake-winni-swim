@@ -2,7 +2,7 @@
   "source": "EPA CyAN (Sentinel-3 OLCI satellite, weekly max)",
   "sourceUrl": "https://www.epa.gov/water-research/cyanobacteria-assessment-network-cyan",
   "note": "Cell concentrations are satellite estimates of cyanobacteria, not direct water samples. Use as a lake-wide screening signal, not a substitute for posted advisories.",
-  "fetchedAt": "2026-09-15T15:29:09.819Z",
+  "fetchedAt": "2026-09-22T15:27:27.671Z",
   "points": [
     {
       "area": "The Broads (Center)",
@@ -66,10 +66,10 @@
       "lat": 43.685,
       "lng": -71.31,
       "locationName": "Haley Point",
-      "cellConcentration": 80167.805,
-      "maxCellConcentration": 80167.805,
-      "imageDate": "04-27-2026 04:00:00:0 UTC",
-      "imageDateLong": 1777262400000,
+      "cellConcentration": 135518.94,
+      "maxCellConcentration": 135518.94,
+      "imageDate": "09-16-2026 04:00:00:0 UTC",
+      "imageDateLong": 1789531200000,
       "validCellsCount": 3
     },
     {
@@ -88,11 +88,11 @@
       "lat": 43.678,
       "lng": -71.3,
       "locationName": "Store Island",
-      "cellConcentration": 62517.27,
-      "maxCellConcentration": 62517.27,
-      "imageDate": "06-06-2026 04:00:00:0 UTC",
-      "imageDateLong": 1780718400000,
-      "validCellsCount": 2
+      "cellConcentration": 15703.628,
+      "maxCellConcentration": 17060.824,
+      "imageDate": "09-19-2026 04:00:00:0 UTC",
+      "imageDateLong": 1789790400000,
+      "validCellsCount": 3
     }
   ]
 }
