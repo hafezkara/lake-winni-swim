@@ -2,7 +2,7 @@
   "source": "EPA CyAN (Sentinel-3 OLCI satellite, weekly max)",
   "sourceUrl": "https://www.epa.gov/water-research/cyanobacteria-assessment-network-cyan",
   "note": "Cell concentrations are satellite estimates of cyanobacteria, not direct water samples. Use as a lake-wide screening signal, not a substitute for posted advisories.",
-  "fetchedAt": "2026-09-22T15:27:27.671Z",
+  "fetchedAt": "2026-09-29T16:49:43.122Z",
   "points": [
     {
       "area": "The Broads (Center)",
@@ -77,10 +77,10 @@
       "lat": 43.62,
       "lng": -71.455,
       "locationName": "Spindle Point",
-      "cellConcentration": 178648.75,
-      "maxCellConcentration": 178648.75,
-      "imageDate": "03-28-2026 04:00:00:0 UTC",
-      "imageDateLong": 1774670400000,
+      "cellConcentration": 14060.476,
+      "maxCellConcentration": 21877.615,
+      "imageDate": "09-22-2026 04:00:00:0 UTC",
+      "imageDateLong": 1790049600000,
       "validCellsCount": 4
     },
     {
