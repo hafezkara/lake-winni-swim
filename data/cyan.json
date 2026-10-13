@@ -2,18 +2,18 @@
   "source": "EPA CyAN (Sentinel-3 OLCI satellite, weekly max)",
   "sourceUrl": "https://www.epa.gov/water-research/cyanobacteria-assessment-network-cyan",
   "note": "Cell concentrations are satellite estimates of cyanobacteria, not direct water samples. Use as a lake-wide screening signal, not a substitute for posted advisories.",
-  "fetchedAt": "2026-10-06T17:04:45.169Z",
+  "fetchedAt": "2026-10-13T18:02:57.860Z",
   "points": [
     {
       "area": "The Broads (Center)",
       "lat": 43.65,
       "lng": -71.3,
       "locationName": "Melvin Island",
-      "cellConcentration": 52966.348,
-      "maxCellConcentration": 52966.348,
-      "imageDate": "10-03-2026 04:00:00:0 UTC",
-      "imageDateLong": 1791000000000,
-      "validCellsCount": 2
+      "cellConcentration": 128233.06,
+      "maxCellConcentration": 387257.62,
+      "imageDate": "10-10-2026 04:00:00:0 UTC",
+      "imageDateLong": 1791604800000,
+      "validCellsCount": 4
     },
     {
       "area": "Alton Bay",
@@ -66,10 +66,10 @@
       "lat": 43.685,
       "lng": -71.31,
       "locationName": "Haley Point",
-      "cellConcentration": 135518.94,
-      "maxCellConcentration": 135518.94,
-      "imageDate": "09-16-2026 04:00:00:0 UTC",
-      "imageDateLong": 1789531200000,
+      "cellConcentration": 89536.48,
+      "maxCellConcentration": 89536.48,
+      "imageDate": "10-12-2026 04:00:00:0 UTC",
+      "imageDateLong": 1791777600000,
       "validCellsCount": 3
     },
     {
@@ -77,22 +77,22 @@
       "lat": 43.62,
       "lng": -71.455,
       "locationName": "Spindle Point",
-      "cellConcentration": 14060.476,
-      "maxCellConcentration": 21877.615,
-      "imageDate": "09-22-2026 04:00:00:0 UTC",
-      "imageDateLong": 1790049600000,
-      "validCellsCount": 4
+      "cellConcentration": 10964.782,
+      "maxCellConcentration": 199526.22,
+      "imageDate": "10-12-2026 04:00:00:0 UTC",
+      "imageDateLong": 1791777600000,
+      "validCellsCount": 3
     },
     {
       "area": "19 Mile Bay / Tuftonboro",
       "lat": 43.678,
       "lng": -71.3,
       "locationName": "Store Island",
-      "cellConcentration": 15703.628,
-      "maxCellConcentration": 17060.824,
-      "imageDate": "09-19-2026 04:00:00:0 UTC",
-      "imageDateLong": 1789790400000,
-      "validCellsCount": 3
+      "cellConcentration": 32210.688,
+      "maxCellConcentration": 32210.688,
+      "imageDate": "10-12-2026 04:00:00:0 UTC",
+      "imageDateLong": 1791777600000,
+      "validCellsCount": 4
     }
   ]
 }
