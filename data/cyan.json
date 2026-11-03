@@ -2,7 +2,7 @@
   "source": "EPA CyAN (Sentinel-3 OLCI satellite, weekly max)",
   "sourceUrl": "https://www.epa.gov/water-research/cyanobacteria-assessment-network-cyan",
   "note": "Cell concentrations are satellite estimates of cyanobacteria, not direct water samples. Use as a lake-wide screening signal, not a substitute for posted advisories.",
-  "fetchedAt": "2026-10-27T16:16:26.507Z",
+  "fetchedAt": "2026-11-03T18:16:34.999Z",
   "points": [
     {
       "area": "The Broads (Center)",
@@ -10,10 +10,10 @@
       "lng": -71.3,
       "locationName": "Melvin Island",
       "cellConcentration": 46131.758,
-      "maxCellConcentration": 270395.84,
-      "imageDate": "10-25-2026 04:00:00:0 UTC",
-      "imageDateLong": 1792900800000,
-      "validCellsCount": 6
+      "maxCellConcentration": 420726.66,
+      "imageDate": "10-31-2026 04:00:00:0 UTC",
+      "imageDateLong": 1793419200000,
+      "validCellsCount": 9
     },
     {
       "area": "Alton Bay",
@@ -44,22 +44,22 @@
       "lat": 43.705,
       "lng": -71.455,
       "locationName": "Halfmile Island",
-      "cellConcentration": 235504.94,
-      "maxCellConcentration": 242102.92,
-      "imageDate": "10-24-2026 04:00:00:0 UTC",
-      "imageDateLong": 1792814400000,
-      "validCellsCount": 6
+      "cellConcentration": 263026.8,
+      "maxCellConcentration": 263026.8,
+      "imageDate": "10-31-2026 04:00:00:0 UTC",
+      "imageDateLong": 1793419200000,
+      "validCellsCount": 4
     },
     {
       "area": "Braun’s Bay Sandbar (Moultonborough)",
       "lat": 43.722,
       "lng": -71.378,
       "locationName": "Town of Moultonborough",
-      "cellConcentration": 301995.2,
-      "maxCellConcentration": 301995.2,
-      "imageDate": "10-25-2026 04:00:00:0 UTC",
-      "imageDateLong": 1792900800000,
-      "validCellsCount": 5
+      "cellConcentration": 39084.09,
+      "maxCellConcentration": 285759.06,
+      "imageDate": "10-31-2026 04:00:00:0 UTC",
+      "imageDateLong": 1793419200000,
+      "validCellsCount": 3
     },
     {
       "area": "Harilla Landing (Long Island)",
@@ -77,22 +77,22 @@
       "lat": 43.62,
       "lng": -71.455,
       "locationName": "Spindle Point",
-      "cellConcentration": 71779.43,
-      "maxCellConcentration": 409260.66,
-      "imageDate": "10-24-2026 04:00:00:0 UTC",
-      "imageDateLong": 1792814400000,
-      "validCellsCount": 6
+      "cellConcentration": 23768.402,
+      "maxCellConcentration": 121338.88,
+      "imageDate": "10-31-2026 04:00:00:0 UTC",
+      "imageDateLong": 1793419200000,
+      "validCellsCount": 4
     },
     {
       "area": "19 Mile Bay / Tuftonboro",
       "lat": 43.678,
       "lng": -71.3,
       "locationName": "Store Island",
-      "cellConcentration": 263026.8,
-      "maxCellConcentration": 263026.8,
-      "imageDate": "10-25-2026 04:00:00:0 UTC",
-      "imageDateLong": 1792900800000,
-      "validCellsCount": 2
+      "cellConcentration": 17060.824,
+      "maxCellConcentration": 111686.32,
+      "imageDate": "10-31-2026 04:00:00:0 UTC",
+      "imageDateLong": 1793419200000,
+      "validCellsCount": 4
     }
   ]
 }
