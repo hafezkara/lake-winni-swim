@@ -2,18 +2,18 @@
   "source": "EPA CyAN (Sentinel-3 OLCI satellite, weekly max)",
   "sourceUrl": "https://www.epa.gov/water-research/cyanobacteria-assessment-network-cyan",
   "note": "Cell concentrations are satellite estimates of cyanobacteria, not direct water samples. Use as a lake-wide screening signal, not a substitute for posted advisories.",
-  "fetchedAt": "2026-11-03T18:16:34.999Z",
+  "fetchedAt": "2026-11-10T18:32:12.821Z",
   "points": [
     {
       "area": "The Broads (Center)",
       "lat": 43.65,
       "lng": -71.3,
       "locationName": "Melvin Island",
-      "cellConcentration": 46131.758,
-      "maxCellConcentration": 420726.66,
+      "cellConcentration": 50118.723,
+      "maxCellConcentration": 50118.723,
       "imageDate": "10-31-2026 04:00:00:0 UTC",
       "imageDateLong": 1793419200000,
-      "validCellsCount": 9
+      "validCellsCount": 4
     },
     {
       "area": "Alton Bay",
